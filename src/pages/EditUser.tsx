@@ -2,17 +2,28 @@ import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Alert, Button, Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 import userService from '../services/user.service';
+import roleService from '../services/role.service';
+import { Role } from '../dto/role';
 
 export default function EditUser() {
 
-    const [ id, setId ] = React.useState<number>();
-    const [ name, setName ] = React.useState('');
-    const [ username, setUsername ] = React.useState('');
-    const [ password, setPassword ] = React.useState('');
-    const [ confirmPassword, setConfirmPassword ] = React.useState('');
+    const [id, setId] = React.useState<number>();
+    const [name, setName] = React.useState('');
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [confirmPassword, setConfirmPassword] = React.useState('');
+    const [roles, setRoles] = React.useState<Role[]>([]);
 
     const navigation = useNavigation<any>();
     const route = useRoute();
+
+    navigation.setOptions({
+        headerRight: () =>
+            <>
+                <Button title="Listar Role" onPress={() => navigation.navigate('RoleList')} />
+                <Button title="Cadastrar Role" onPress={() => navigation.navigate('RoleRegister')} />
+            </>
+    });
 
     function fetchUser() {
         if (route.params) {
@@ -26,10 +37,19 @@ export default function EditUser() {
                     }
                 });
             }
-        } 
+        }
     }
 
-    React.useEffect(() => fetchUser(), []);
+    function fetchRoles() {
+        roleService.getList().then(roles => {
+            setRoles(roles);
+        })
+    }
+
+    React.useEffect(() => {
+        fetchUser();
+        fetchRoles();
+    });
 
     async function save() {
         if (!username || !username.trim()) {
@@ -47,7 +67,7 @@ export default function EditUser() {
                 Alert.alert('A Senha é obrigatória!');
                 return;
             }
-    
+
             if (password !== confirmPassword) {
                 Alert.alert('As Senhas não conferem!');
                 return;
@@ -65,7 +85,7 @@ export default function EditUser() {
                 <Text style={{ fontSize: 20 }}>Login: </Text>
                 <TextInput
                     style={{ width: Dimensions.get('screen').width - 40, height: 50, borderWidth: 1 }}
-                    onChangeText={ value => setUsername(value) } value={username}
+                    onChangeText={value => setUsername(value)} value={username}
                 />
             </View>
 
@@ -73,16 +93,25 @@ export default function EditUser() {
                 <Text style={{ fontSize: 20 }}>Nome: </Text>
                 <TextInput
                     style={{ width: Dimensions.get('screen').width - 40, height: 50, borderWidth: 1 }}
-                    onChangeText={ value => setName(value) } value={name}
+                    onChangeText={value => setName(value)} value={name}
                 />
             </View>
 
-            { !id && ( <>
+            <View>
+                {roles.map((role, index) => (
+                    <View key={index}>
+                        <Text>Name: {role.name}</Text>
+                        <Text>Description: {role.description}</Text>
+                    </View>
+                ))}
+            </View>
+
+            {!id && (<>
                 <View style={{ paddingTop: 10, paddingHorizontal: 20, alignItems: 'flex-start', width: Dimensions.get('screen').width }}>
                     <Text style={{ fontSize: 20 }}>Senha: </Text>
                     <TextInput
                         style={{ width: Dimensions.get('screen').width - 40, height: 50, borderWidth: 1 }}
-                        onChangeText={ value => setPassword(value) } value={password}
+                        onChangeText={value => setPassword(value)} value={password}
                         secureTextEntry
                     />
                 </View>
@@ -90,11 +119,11 @@ export default function EditUser() {
                     <Text style={{ fontSize: 20 }}>Confirmar Senha: </Text>
                     <TextInput
                         style={{ width: Dimensions.get('screen').width - 40, height: 50, borderWidth: 1 }}
-                        onChangeText={ value => setConfirmPassword(value) } value={confirmPassword}
+                        onChangeText={value => setConfirmPassword(value)} value={confirmPassword}
                         secureTextEntry
                     />
                 </View>
-            </> )}
+            </>)}
 
             <View style={{ padding: 20 }}>
                 <Button title=' Salvar ' onPress={save} />

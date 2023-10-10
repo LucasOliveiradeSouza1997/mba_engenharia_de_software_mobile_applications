@@ -3,7 +3,8 @@ import userRepository from "./user.repository";
 
 class UserService {
 
-    private readonly url = 'http://192.168.0.19:3030/users';
+    //private readonly url = 'http://192.168.0.19:3030/users';
+    private readonly url = 'http://192.168.15.9:3030/users';
 
     private async getHeaders() {
         const logged = await userRepository.getLoggedUser();
