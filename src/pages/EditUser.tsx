@@ -12,7 +12,8 @@ export default function EditUser() {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-    const [roles, setRoles] = React.useState<Role[]>([]);
+    const [roles, setRoles] = React.useState<string[]>([]);
+    const [data, setData] = React.useState<Role[]>([]);
 
     const navigation = useNavigation<any>();
     const route = useRoute();
@@ -41,8 +42,8 @@ export default function EditUser() {
     }
 
     function fetchRoles() {
-        roleService.getList().then(roles => {
-            setRoles(roles);
+        roleService.getList().then(data => {
+            setData(data);
         })
     }
 
@@ -58,7 +59,7 @@ export default function EditUser() {
         }
 
         if (id) {
-            userService.update({ id, name, username })
+            userService.update({ id, name, username, roles })
                 .then(saved => navigation.goBack())
                 .catch(error => Alert.alert(error));
 
@@ -73,7 +74,7 @@ export default function EditUser() {
                 return;
             }
 
-            userService.create({ username, name, password })
+            userService.create({ username, name, password, roles })
                 .then(saved => navigation.goBack())
                 .catch(error => Alert.alert(error));
         }
@@ -98,10 +99,11 @@ export default function EditUser() {
             </View>
 
             <View>
-                {roles.map((role, index) => (
+                {data.map((d, index) => (
                     <View key={index}>
-                        <Text>Name: {role.name}</Text>
-                        <Text>Description: {role.description}</Text>
+                        <Text>Name: {d.id}</Text>
+                        <Text>Name: {d.name}</Text>
+                        <Text>Description: {d.description}</Text>
                     </View>
                 ))}
             </View>
