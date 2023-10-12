@@ -4,6 +4,9 @@ import { Alert, Button, Dimensions, StyleSheet, Text, TextInput, View } from 're
 import userService from '../services/user.service';
 import roleService from '../services/role.service';
 import { Role } from '../dto/role';
+import { Data } from '../dto/data';
+import { MultiSelect } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function EditUser() {
 
@@ -42,8 +45,8 @@ export default function EditUser() {
     }
 
     function fetchRoles() {
-        roleService.getList().then(data => {
-            setData(data);
+        roleService.getList().then(roles => {
+            setData(roles);
         })
     }
 
@@ -98,14 +101,33 @@ export default function EditUser() {
                 />
             </View>
 
-            <View>
-                {data.map((d, index) => (
-                    <View key={index}>
-                        <Text>Name: {d.id}</Text>
-                        <Text>Name: {d.name}</Text>
-                        <Text>Description: {d.description}</Text>
-                    </View>
-                ))}
+            <View style={styles.containerMultiple}>
+                <MultiSelect
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    search
+                    data={data}
+                    labelField="name"
+                    valueField="name"
+                    placeholder="Selecione uma role"
+                    searchPlaceholder="Procurar..."
+                    value={roles}
+                    onChange={item => {
+                        setRoles(item);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                            style={styles.icon}
+                            color="black"
+                            name="Safety"
+                            size={20}
+                        />
+                    )}
+                    selectedStyle={styles.selectedStyle}
+                />
             </View>
 
             {!id && (<>
@@ -141,5 +163,35 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    containerMultiple: { 
+        padding: 16,
+        width: Dimensions.get('screen').width,
+    },
+    dropdown: {
+        height: 50,
+        backgroundColor: 'transparent',
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+    },
+    selectedTextStyle: {
+        fontSize: 14,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
+    icon: {
+        marginRight: 5,
+    },
+    selectedStyle: {
+        borderRadius: 12,
     },
 });
