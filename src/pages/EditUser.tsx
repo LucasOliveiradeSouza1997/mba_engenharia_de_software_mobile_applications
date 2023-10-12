@@ -20,14 +20,6 @@ export default function EditUser() {
     const navigation = useNavigation<any>();
     const route = useRoute();
 
-    navigation.setOptions({
-        headerRight: () =>
-            <>
-                <Button title="Listar Role" onPress={() => navigation.navigate('RoleList')} />
-                <Button title="Cadastrar Role" onPress={() => navigation.navigate('RoleRegister')} />
-            </>
-    });
-
     function fetchUser() {
         if (route.params) {
             const { userId } = route.params as any;

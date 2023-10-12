@@ -9,7 +9,6 @@ export default function RoleRegister() {
     const [description, setDescription] = React.useState('');
 
     const navigation = useNavigation<any>();
-    const route = useRoute();
 
     async function register() {
 
