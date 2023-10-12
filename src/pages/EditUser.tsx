@@ -38,6 +38,7 @@ export default function EditUser() {
                         setId(user.id);
                         setName(user.name ? user.name : '');
                         setUsername(user.username);
+                        setRoles(user.roles ? user.roles : []);
                     }
                 });
             }
