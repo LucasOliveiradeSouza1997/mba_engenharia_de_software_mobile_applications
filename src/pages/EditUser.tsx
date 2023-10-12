@@ -4,7 +4,6 @@ import { Alert, Button, Dimensions, StyleSheet, Text, TextInput, View } from 're
 import userService from '../services/user.service';
 import roleService from '../services/role.service';
 import { Role } from '../dto/role';
-import { Data } from '../dto/data';
 import { MultiSelect } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -54,7 +53,7 @@ export default function EditUser() {
     React.useEffect(() => {
         fetchUser();
         fetchRoles();
-    });
+    },[]);
 
     async function save() {
         if (!username || !username.trim()) {
